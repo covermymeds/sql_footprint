@@ -66,7 +66,8 @@ describe SqlFootprint do
     it 'dedupes the same sql' do
       Widget.create!
       Widget.create!
-      expect(sql_lines).to eq(sql_lines.uniq)
+      insert_statements = sql_lines.select { |line| line.starts_with?('INSERT INTO "widgets"') }
+      expect(insert_statements.length).to eq(1)
     end
 
     it 'sorts the results' do
