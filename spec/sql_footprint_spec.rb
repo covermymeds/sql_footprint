@@ -45,24 +45,6 @@ describe SqlFootprint do
       )
     end
 
-    it 'formats IN clauses' do
-      Widget.where(name: [SecureRandom.uuid, SecureRandom.uuid]).last
-      expect(footprint_sql).to include(
-        'SELECT  "widgets".* FROM "widgets" ' \
-        'WHERE "widgets"."name" IN (values-redacted)  ' \
-        'ORDER BY "widgets"."id" DESC LIMIT 1'
-      )
-    end
-
-    it 'formats LIKE clauses' do
-      Widget.where(['name LIKE ?', SecureRandom.uuid]).last
-      expect(footprint_sql).to include(
-        'SELECT  "widgets".* FROM "widgets" ' \
-        'WHERE (name LIKE \'value-redacted\')  ' \
-        'ORDER BY "widgets"."id" DESC LIMIT 1'
-      )
-    end
-
     it 'dedupes the same sql' do
       Widget.create!
       Widget.create!
