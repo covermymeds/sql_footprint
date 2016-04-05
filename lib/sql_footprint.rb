@@ -18,7 +18,7 @@ module SqlFootprint
 
     def stop
       @capture = false
-      File.write FILENAME, lines.join(NEWLINE)
+      File.write FILENAME, @lines.sort.join(NEWLINE)
     end
 
     def exclude
@@ -26,10 +26,6 @@ module SqlFootprint
       yield
     ensure
       @capture = true
-    end
-
-    def lines
-      @lines.sort
     end
 
     def capture sql

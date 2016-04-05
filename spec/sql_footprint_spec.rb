@@ -14,20 +14,30 @@ describe SqlFootprint do
       Cog.create!
     end
 
+    let(:footprint_sql) do
+      described_class.stop
+      File.read 'footprint.sql'
+    end
+
+    let(:sql_lines) do
+      footprint_sql.split("\n")
+    end
+
     it 'logs sql' do
-      expect { Widget.create! }.to change { described_class.lines.length }.by(+1)
+      Widget.create!
+      expect(footprint_sql).not_to be_empty
     end
 
     it 'formats inserts' do
       Widget.create!
-      expect(described_class.lines).to include(
+      expect(footprint_sql).to include(
         'INSERT INTO "widgets" ("created_at", "updated_at") VALUES (?, ?)'
       )
     end
 
     it 'formats selects' do
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
-      expect(described_class.lines).to include(
+      expect(footprint_sql).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" = ? AND ' \
         '"widgets"."quantity" = ?  ' \
@@ -37,7 +47,7 @@ describe SqlFootprint do
 
     it 'formats IN clauses' do
       Widget.where(name: [SecureRandom.uuid, SecureRandom.uuid]).last
-      expect(described_class.lines).to include(
+      expect(footprint_sql).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" IN (values-redacted)  ' \
         'ORDER BY "widgets"."id" DESC LIMIT 1'
@@ -46,7 +56,7 @@ describe SqlFootprint do
 
     it 'formats LIKE clauses' do
       Widget.where(['name LIKE ?', SecureRandom.uuid]).last
-      expect(described_class.lines).to include(
+      expect(footprint_sql).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE (name LIKE \'value-redacted\')  ' \
         'ORDER BY "widgets"."id" DESC LIMIT 1'
@@ -54,21 +64,20 @@ describe SqlFootprint do
     end
 
     it 'dedupes the same sql' do
-      expect do
-        Widget.create!
-        Widget.create!
-      end.to change { described_class.lines.length }.by(+1)
+      Widget.create!
+      Widget.create!
+      expect(sql_lines).to eq(sql_lines.uniq)
     end
 
     it 'sorts the results' do
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
       Widget.create!
-      expect(described_class.lines.first).to include('INSERT INTO')
+      expect(footprint_sql).to include('INSERT INTO')
     end
 
     it 'works with joins' do
       Widget.joins(:cogs).where(name: SecureRandom.uuid).load
-      expect(described_class.lines).to include(
+      expect(footprint_sql).to include(
         'SELECT "widgets".* FROM "widgets" ' \
         'INNER JOIN "cogs" ON "cogs"."widget_id" = "widgets"."id" ' \
         'WHERE "widgets"."name" = ?'
@@ -76,12 +85,10 @@ describe SqlFootprint do
     end
 
     it 'can exclude some statements' do
-      expect do
-        Widget.where(name: SecureRandom.hex).last
-        widget = described_class.exclude { Widget.create! }
-        expect(widget).to be_a(Widget)
-      end.to change { described_class.lines.length }.by(+1)
-      expect(described_class.lines.join).not_to include 'INSERT INTO \"widgets\"'
+      Widget.where(name: SecureRandom.hex).last
+      widget = described_class.exclude { Widget.create! }
+      expect(widget).to be_a(Widget)
+      expect(footprint_sql).not_to include 'INSERT INTO \"widgets\"'
     end
   end
 
