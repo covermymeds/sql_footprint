@@ -31,7 +31,7 @@ describe SqlFootprint do
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" = ? AND ' \
         '"widgets"."quantity" = ?  ' \
-        'ORDER BY "widgets"."id" DESC LIMIT 1'
+        'ORDER BY "widgets"."id" DESC LIMIT number-redacted'
       )
     end
 
