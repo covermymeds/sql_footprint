@@ -34,7 +34,11 @@ SqlFootprint.start
 Minitest.after_run { SqlFootprint.stop }
 ```
 
-After running your specs you'll find a 'footprint.sql' file in your project.
+#### Outputs
+After running your specs you'll find a 'footprint.*.sql' file in your project.
+Footprints are per-database. For example, if you're using DB1 AND DB2 in your app, you would end up with two footprint files. (footprint.db1.sql, footprint.db2.sql)
+
+If you're using an in-memory database, you'll end up with `footprint.:memory:.sql`.
 
 #### Excluding Setup Code
 
