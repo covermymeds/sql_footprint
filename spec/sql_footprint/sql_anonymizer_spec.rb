@@ -57,4 +57,12 @@ describe SqlFootprint::SqlAnonymizer do
       'WHERE (name = LOWER(\'value-redacted\'))'
     )
   end
+
+  it 'formats unicode string literals for MSSQL' do
+    sql = Widget.where("name = N''whatever''").to_sql
+    expect(anonymizer.anonymize(sql)).to eq(
+      'SELECT "widgets".* FROM "widgets" ' \
+      'WHERE (name = N\'\'value-redacted\'\')'
+    )
+  end
 end
