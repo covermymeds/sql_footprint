@@ -9,10 +9,8 @@ module SqlFootprint
   ActiveSupport::Notifications.subscribe('sql.active_record') do |_, _, _, _, payload|
     if @capture
       adapter = ObjectSpace._id2ref(payload.fetch(:connection_id))
-      config = adapter.instance_variable_get(:@config)
-      if config.nil?
-        config = adapter.instance_variable_get(:@connection_options)
-      end
+      config = adapter.instance_variable_get(:@config) ||
+               adapter.instance_variable_get(:@connection_options)
       database_name = config.fetch(:database)
       capturers[database_name].capture payload.fetch(:sql)
     end
