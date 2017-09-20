@@ -71,6 +71,20 @@ describe SqlFootprint do
       end
       expect(statements.to_a.join).not_to include 'SHOW'
     end
+
+    context 'with a custom rule' do
+      let(:redacted) { '[redacted]'.freeze }
+
+      before do
+        described_class::SqlAnonymizer.add_rule(/SELECT .+ FROM .+/, redacted)
+      end
+
+      it 'formats as expected' do
+        Widget.find_by(id: 9001)
+
+        expect(statements.to_a).to include(redacted)
+      end
+    end
   end
 
   describe '.stop' do
