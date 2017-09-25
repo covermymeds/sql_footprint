@@ -65,4 +65,17 @@ describe SqlFootprint::SqlAnonymizer do
       'WHERE (name = N\'\'value-redacted\'\')'
     )
   end
+
+  context 'with a custom rule' do
+    let(:redacted) { 'SELECT [redacted] AS [redacted]'.freeze }
+
+    before do
+      described_class.add_rule(/SELECT .+ AS .+/, redacted)
+    end
+
+    it 'formats as expected' do
+      sql = 'SELECT some_thing AS other_thing'
+      expect(anonymizer.anonymize(sql)).to eq(redacted)
+    end
+  end
 end

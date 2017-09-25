@@ -34,6 +34,15 @@ SqlFootprint.start
 Minitest.after_run { SqlFootprint.stop }
 ```
 
+You can also add a Custom rule to SqlAnonymizer before running `start`:
+```ruby
+RSpec.configure do |config|
+  SqlFootprint::SqlAnonymizer.add_rule(/SELECT (.+) AS (.+)/, 'SELECT [redacted] AS [redacted]')
+  config.before(:suite) { SqlFootprint.start }
+  config.after(:suite) { SqlFootprint.stop }
+end
+```
+
 #### Outputs
 After running your specs you'll find a 'footprint.*.sql' file in your project.
 Footprints are per-database. For example, if you're using DB1 AND DB2 in your app, you would end up with two footprint files. (footprint.db1.sql, footprint.db2.sql)
