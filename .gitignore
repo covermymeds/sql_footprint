@@ -9,3 +9,4 @@
 /tmp/
 footprint.sql
 footprint.:memory:.sql
+.idea/
