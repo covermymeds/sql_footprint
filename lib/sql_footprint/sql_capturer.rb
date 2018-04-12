@@ -17,6 +17,7 @@ module SqlFootprint
     end
 
     def write
+      binding.pry
       File.write filename, serialized_statements
     end
 
