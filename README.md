@@ -65,7 +65,8 @@ Or if you're using FactoryGirl you could do something like this:
 RSpec.configure do |config|
   module FactoryBoy
     def create(*args)
-      SqlFootprint.exclude { FactoryGirl.create(*args) }
+      ``` FactoryGirl changed their gem name to FactoryBot ```
+      SqlFootprint.exclude { FactoryBot.create(*args) }
     end
   end
   config.include FactoryBoy
