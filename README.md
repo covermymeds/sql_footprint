@@ -63,13 +63,13 @@ end
 Or if you're using FactoryGirl you could do something like this:
 ```ruby
 RSpec.configure do |config|
-  module FactoryBoy
+  module FactoryKid
     def create(*args)
       ``` FactoryGirl changed their gem name to FactoryBot ```
       SqlFootprint.exclude { FactoryBot.create(*args) }
     end
   end
-  config.include FactoryBoy
+  config.include FactoryKid
 end
 ```
 

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require "awesome_print"
 
 describe SqlFootprint do
   it 'has a version number' do
@@ -29,14 +28,26 @@ describe SqlFootprint do
       )
     end
 
-    it 'formats selects by 1 count' do
-      expect { Widget.where(name: SecureRandom.uuid, quantity: 1).last }.to change { statements.count }.by(+1)
+    it 'appends the statement count by 1' do
+      expect do
+        Widget.where(name: SecureRandom.uuid, quantity: 1).last
+      end.to change { statements.count }.by(+1)
     end
 
-    it 'formats selects' do
+    it 'appends 1 sql statement' do
+      matches = []
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
-      ap statements.to_a
-      expect(statements.to_a.to_s).to include '\"widgets\".\"name\" = ?'
+
+      matches.push 'SELECT  "widgets".* FROM "widgets"'
+      matches.push 'WHERE "widgets"."name" = ?'
+      matches.push 'AND'
+      matches.push 'widgets"."quantity" = ?'
+      matches.push 'ORDER BY "widgets"."id" DESC'
+      matches.push 'LIMIT ?'
+
+      matches.each do |match|
+        expect(statements.to_a.detect { |record| record.match match }).not_to be_nil
+      end
     end
 
     it 'dedupes the same sql' do
