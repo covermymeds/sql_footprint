@@ -37,13 +37,11 @@ describe SqlFootprint do
     it 'appends 1 sql statement' do
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
 
-      sql_fragments = [ 'SELECT  "widgets".* FROM "widgets"',
-      'WHERE "widgets"."name" = ?',
-      'AND',
-      'widgets"."quantity" = ?',
-      'ORDER BY "widgets"."id" DESC',
-      'LIMIT ?']
-      
+      sql_fragments = ['SELECT  "widgets".* FROM "widgets"',
+                       'WHERE "widgets"."name" = ?',
+                       'AND',
+                       'widgets"."quantity" = ?',
+                       'ORDER BY "widgets"."id" DESC', 'LIMIT ?']
       sql_fragments.all? do |fragment|
         expect(statements.to_a.find { |sql| sql.match(fragment) }).to be_truthy
       end
