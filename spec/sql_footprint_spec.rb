@@ -28,14 +28,23 @@ describe SqlFootprint do
       )
     end
 
-    it 'formats selects' do
+    it 'appends the statement count by 1' do
+      expect do
+        Widget.where(name: SecureRandom.uuid, quantity: 1).last
+      end.to change { statements.count }.by(+1)
+    end
+
+    it 'appends 1 sql statement' do
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
-      expect(statements.to_a).to include(
-        'SELECT  "widgets".* FROM "widgets" ' \
-        'WHERE "widgets"."name" = ? AND ' \
-        '"widgets"."quantity" = ?  ' \
-        'ORDER BY "widgets"."id" DESC LIMIT 1'
-      )
+
+      sql_fragments = ['SELECT  "widgets".* FROM "widgets"',
+                       'WHERE "widgets"."name" = ?',
+                       'AND',
+                       'widgets"."quantity" = ?',
+                       'ORDER BY "widgets"."id" DESC', 'LIMIT ?']
+      sql_fragments.all? do |fragment|
+        expect(statements.to_a.find { |sql| sql.match(fragment) }).to be_truthy
+      end
     end
 
     it 'dedupes the same sql' do
