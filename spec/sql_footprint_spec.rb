@@ -28,13 +28,23 @@ describe SqlFootprint do
       )
     end
 
-    it 'formats selects' do
+    it 'formats selects', rails: 4 do
       Widget.where(name: SecureRandom.uuid, quantity: 1).last
       expect(statements.to_a).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" = ? AND ' \
         '"widgets"."quantity" = ?  ' \
         'ORDER BY "widgets"."id" DESC LIMIT 1'
+      )
+    end
+
+    it 'formats selects', rails: 5 do
+      Widget.where(name: SecureRandom.uuid, quantity: 1).last
+      expect(statements.to_a).to include(
+        'SELECT  "widgets".* FROM "widgets" ' \
+        'WHERE "widgets"."name" = ? AND ' \
+        '"widgets"."quantity" = ?  ' \
+        'ORDER BY "widgets"."id" DESC LIMIT ?'
       )
     end
 
