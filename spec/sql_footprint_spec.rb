@@ -33,7 +33,7 @@ describe SqlFootprint do
       expect(statements.to_a).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" = ? AND ' \
-        '"widgets"."quantity" = ?  ' \
+        '"widgets"."quantity" = ? ' \
         'ORDER BY "widgets"."id" DESC LIMIT 1'
       )
     end
@@ -43,7 +43,7 @@ describe SqlFootprint do
       expect(statements.to_a).to include(
         'SELECT  "widgets".* FROM "widgets" ' \
         'WHERE "widgets"."name" = ? AND ' \
-        '"widgets"."quantity" = ?  ' \
+        '"widgets"."quantity" = ? ' \
         'ORDER BY "widgets"."id" DESC LIMIT ?'
       )
     end
