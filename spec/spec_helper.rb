@@ -11,7 +11,7 @@ load File.dirname(__FILE__) + '/schema.rb'
 require File.dirname(__FILE__) + '/models.rb'
 
 rails5 = `bundle show activerecord`.strip.split('/').last =~ /activerecord-5\./
-exclude_rails = rails5 ? 4 : 5  # don't run tests for the version of rails we are NOT using
+exclude_rails = rails5 ? 4 : 5 # don't run tests for the version of rails we are NOT using
 
 RSpec.configure do |config|
   config.filter_run_excluding rails: exclude_rails
