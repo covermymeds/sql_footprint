@@ -66,6 +66,13 @@ describe SqlFootprint::SqlAnonymizer do
     )
   end
 
+  it 'handles multi-line VALUES' do
+    sql = 'INSERT INTO "widgets" ("created_at", "name") VALUES ' \
+    "('2016-05-1 6 19:16:04.981048', 'asdf\nasdf') RETURNING \"id\""
+    expect(anonymizer.anonymize(sql)).to eq 'INSERT INTO "widgets" ' \
+    '("created_at", "name") VALUES (values-redacted) RETURNING "id"'
+  end
+
   context 'with a custom rule' do
     let(:redacted) { 'SELECT [redacted] AS [redacted]'.freeze }
 
