@@ -26,6 +26,14 @@ describe SqlFootprint::SqlAnonymizer do
     )
   end
 
+  it 'formats LTRIM correctly' do
+    sql = Widget.where(['LTRIM(\'  test\') = LTRIM(\'    test\')', SecureRandom.uuid]).to_sql
+    expect(anonymizer.anonymize(sql)).to eq(
+      'SELECT "widgets".* FROM "widgets" ' \
+      'WHERE (LTRIM(\'value-redacted\') = LTRIM(\'value-redacted\'))'
+    )
+  end
+
   it 'formats numbers' do
     sql = Widget.where(quantity: rand(100)).to_sql
     expect(anonymizer.anonymize(sql)).to eq(
