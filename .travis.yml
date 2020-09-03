@@ -1,6 +1,5 @@
-sudo: false
-cache: bundler
 language: ruby
+cache: bundler
 script:
   - bundle exec rspec
   - bundle exec rubocop --display-cop-names
