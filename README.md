@@ -60,16 +60,20 @@ before do
 end
 ```
 
-Or if you're using FactoryGirl you could do something like this:
+Or if you're using FactoryBot you could do something like this:
 ```ruby
 RSpec.configure do |config|
-  module FactoryBoy
+  module FactoryKid
     def create(*args)
-      SqlFootprint.exclude { FactoryGirl.create(*args) }
+      SqlFootprint.exclude { FactoryBot.create(*args) }
     end
   end
-  config.include FactoryBoy
+  config.include FactoryKid
 end
 ```
+
+## Compatibility
+- For Rails < 6.0 compatibility, please use v2.0.1.
+- For Rails >= 6.0 compatibility, please use v3.0.0.
 
 DO NOT run SqlFootprint in production!
