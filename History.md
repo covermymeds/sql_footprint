@@ -1,3 +1,8 @@
+3.0.1 / 2021-05-12
+==================
+
+  * Remove ruby 2.3 and 2.4 from CI build. Ruby >= 2.5.0 is required for rails 6.
+
 3.0.0 / 2021-05-12
 ==================
 
