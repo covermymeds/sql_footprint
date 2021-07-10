@@ -5,7 +5,7 @@ module SqlFootprint
       /([\s\(])'.*?'/ => "\\1'value-redacted'".freeze, # literal strings
       /N''.*''/ => "N''value-redacted''".freeze, # literal MSSQL strings
       /\s+(!=|=|<|>|<=|>=)\s+[0-9]+/ => ' \1 number-redacted'.freeze, # numbers
-      /\s+VALUES\s+\(.+\)/ => ' VALUES (values-redacted)'.freeze, # VALUES
+      /\s+VALUES\s+\(.*?\)/m => ' VALUES (values-redacted)'.freeze, # VALUES
     }
 
     def anonymize sql
