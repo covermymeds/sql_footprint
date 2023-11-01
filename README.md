@@ -75,5 +75,6 @@ end
 ## Compatibility
 - For Rails < 6.0 compatibility, please use v2.0.1.
 - For Rails >= 6.0 compatibility, please use v3.0.0.
+- For Rails >= 7.0, please use v3.0.1
 
 DO NOT run SqlFootprint in production!
